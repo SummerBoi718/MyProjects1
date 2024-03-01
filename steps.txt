@@ -1,0 +1,11 @@
+The general steps involved in installing software on a computer system are as follows:
+
+Download: Obtain the software installation files from a trusted source, such as the official website of the software vendor.
+
+Pre-Installation Checks: Ensure that the system meets all hardware and software requirements specified by the software vendor.
+
+Installation Process: Run the installation program and follow the on-screen instructions. This may involve selecting installation options, agreeing to license agreements, choosing installation directories, etc.
+
+Configuration: Configure any settings or preferences during or after the installation process to customize how the software behaves.
+
+Post-Installation Checks: Verify that the software has been installed correctly and test its functionality to ensure it works as expected.
