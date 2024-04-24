@@ -1,0 +1,13 @@
+Divisibility and Integers
+
+#Divisibility - In math, divisibility refers to a number's quality of being evenly divided by another number,
+    without a remainder left over. 
+*Divisors - number 10: Divisors are 1, 2, 5, and 10.
+            number 12: Divisors are 1, 2, 3, 4, 6, and 12.
+            number 25: Divisors are 1, 5, and 25.
+            number 50: Divisors are 1, 2, 5, 10, 25, and 50.
+            number 1000: Divisors are 1, 2, 4, 5, 8, 10, 20, 25, 40, 50, 100, 125, 200, 250, 500, and 1000.
+
+#Integers - Integers include positive numbers, negative numbers, and zero. 'Integer' is a Latin word which means
+    'whole' or 'intact'. This means integers do not include fractions or decimals.
+*Integers - 16,000 , 1, -69, 420, 0
