@@ -176,46 +176,53 @@ public class NotesManagerGui {
     }
 
     private void createNote() {
-       
-    frame.getContentPane().removeAll();
-    frame.repaint();
+        frame.getContentPane().removeAll();
+        frame.repaint();
 
-    panel = new JPanel();
-    panel.setLayout(new BorderLayout());
+        panel = new JPanel();
+        panel.setLayout(new BorderLayout());
 
-    JTextField titleField = new JTextField();
-    JTextArea contentArea = new JTextArea();
-    contentArea.setRows(20); // Set rows for the content area
-    contentArea.setColumns(30); // Set columns for the content area
+        // Create a panel for the title
+        JPanel titlePanel = new JPanel();
+        titlePanel.setLayout(new BorderLayout());
+        JTextField titleField = new JTextField();
+        titlePanel.add(new JLabel("Title:"), BorderLayout.WEST);
+        titlePanel.add(titleField, BorderLayout.CENTER);
 
-    JButton saveButton = new JButton("Save Note");
-    saveButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            saveNoteAndReturn(titleField.getText(), contentArea.getText());
-        }
-    });
+        // Create a panel for the content
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BorderLayout());
+        JTextArea contentArea = new JTextArea();
+        contentPanel.add(new JLabel("Content:"), BorderLayout.NORTH);
+        contentPanel.add(new JScrollPane(contentArea), BorderLayout.CENTER);
 
-    JButton backButton = new JButton("Back");
-    backButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            openMainMenu();
-        }
-    });
+        // Add the title panel and content panel to the main panel
+        panel.add(titlePanel, BorderLayout.NORTH);
+        panel.add(contentPanel, BorderLayout.CENTER);
 
-    panel.add(new JLabel("Title:"), BorderLayout.NORTH);
-    panel.add(titleField, BorderLayout.CENTER);
-    panel.add(new JLabel("Content:"), BorderLayout.WEST);
-    panel.add(new JScrollPane(contentArea), BorderLayout.CENTER);
+        // Create a panel for the buttons
+        JPanel buttonPanel = new JPanel();
+        JButton saveButton = new JButton("Save Note");
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                saveNoteAndReturn(titleField.getText(), contentArea.getText());
+            }
+        });
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openMainMenu();
+            }
+        });
+        buttonPanel.add(saveButton);
+        buttonPanel.add(backButton);
 
-    JPanel buttonPanel = new JPanel();
-    buttonPanel.add(saveButton);
-    buttonPanel.add(backButton);
-    panel.add(buttonPanel, BorderLayout.SOUTH);
+        // Add the button panel to the main panel
+        panel.add(buttonPanel, BorderLayout.SOUTH);
 
-    frame.getContentPane().add(panel);
-    frame.pack();
-}
-
+        frame.getContentPane().add(panel);
+        frame.pack();
+    }
 
     private void deleteNote() {
         JFileChooser fileChooser = new JFileChooser(new File("notes/" + currentUser));
@@ -256,10 +263,10 @@ public class NotesManagerGui {
 
     private void saveNoteAndReturn(String title, String content) {
         // Validate title
-        /*if (title.trim().isEmpty()) {
+        if (title.trim().isEmpty()) {
             JOptionPane.showMessageDialog(frame, "Title cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
-        }*/
+        }
 
         // Create directory for user's notes if it doesn't exist
         File userDir = new File("notes/" + currentUser);
@@ -317,4 +324,3 @@ public class NotesManagerGui {
         });
     }
 }
-
