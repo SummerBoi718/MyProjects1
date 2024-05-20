@@ -150,23 +150,69 @@ public class NotesManagerGui {
         frame.repaint();
 
         panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-
-        JTextArea notesArea = new JTextArea();
-        notesArea.setEditable(false); // Make the text area read-only
-
-        JScrollPane scrollPane = new JScrollPane(notesArea);
+        panel.setLayout(new GridLayout(0, 1));
 
         // Load and display existing notes for the current user
-        String notes = loadNotes();
-        notesArea.setText(notes);
+        File userDir = new File("notes/" + currentUser);
+        if (userDir.exists()) {
+            File[] noteFiles = userDir.listFiles();
+            if (noteFiles != null) {
+                for (File noteFile : noteFiles) {
+                    String title = noteFile.getName().replace(".txt", "");
+                    JButton viewButton = new JButton("View " + title);
+                    viewButton.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            viewNoteContent(noteFile);
+                        }
+                    });
+                    panel.add(viewButton);
+                }
+            }
+        }
+
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openMainMenu();
+            }
+        });
+        panel.add(backButton);
+
+        frame.getContentPane().add(panel);
+        frame.pack();
+    }
+
+    private void viewNoteContent(File noteFile) {
+        frame.getContentPane().removeAll();
+        frame.repaint();
+
+        panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+
+        JTextArea noteContentArea = new JTextArea();
+        noteContentArea.setEditable(false); // Make the text area read-only
+
+        JScrollPane scrollPane = new JScrollPane(noteContentArea);
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(noteFile));
+            String line;
+            StringBuilder content = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+            reader.close();
+            noteContentArea.setText(content.toString());
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(frame, "Error reading note file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         panel.add(scrollPane, BorderLayout.CENTER);
 
         JButton backButton = new JButton("Back");
         backButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                openMainMenu();
+                viewNotes();
             }
         });
         panel.add(backButton, BorderLayout.SOUTH);
@@ -236,29 +282,6 @@ public class NotesManagerGui {
                 JOptionPane.showMessageDialog(frame, "Error deleting note.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
-    }
-
-    private String loadNotes() {
-        StringBuilder notes = new StringBuilder();
-        File userDir = new File("notes/" + currentUser);
-        if (userDir.exists()) {
-            File[] noteFiles = userDir.listFiles();
-            if (noteFiles != null) {
-                for (File noteFile : noteFiles) {
-                    try {
-                        BufferedReader reader = new BufferedReader(new FileReader(noteFile));
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            notes.append(line).append("\n");
-                        }
-                        reader.close();
-                    } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(frame, "Error reading note file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            }
-        }
-        return notes.toString();
     }
 
     private void saveNoteAndReturn(String title, String content) {
