@@ -55,7 +55,7 @@ public class NotesManagerGUI {
         // Authenticate user
         if (authenticate(username, password)) {
             currentUser = username;
-            openNotesManager();
+            openMainMenu();
         } else {
             JOptionPane.showMessageDialog(frame, "Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -109,7 +109,43 @@ public class NotesManagerGUI {
         return false;
     }
 
-    private void openNotesManager() {
+    private void openMainMenu() {
+        frame.getContentPane().removeAll();
+        frame.repaint();
+
+        panel = new JPanel();
+        panel.setLayout(new GridLayout(3, 1));
+
+        JButton viewNotesButton = new JButton("View Notes");
+        viewNotesButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                viewNotes();
+            }
+        });
+
+        JButton createNotesButton = new JButton("Create Note");
+        createNotesButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                createNote();
+            }
+        });
+
+        JButton deleteNotesButton = new JButton("Delete Note");
+        deleteNotesButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                deleteNote();
+            }
+        });
+
+        panel.add(viewNotesButton);
+        panel.add(createNotesButton);
+        panel.add(deleteNotesButton);
+
+        frame.getContentPane().add(panel);
+        frame.pack();
+    }
+
+    private void viewNotes() {
         frame.getContentPane().removeAll();
         frame.repaint();
 
@@ -127,8 +163,67 @@ public class NotesManagerGUI {
 
         panel.add(scrollPane, BorderLayout.CENTER);
 
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openMainMenu();
+            }
+        });
+        panel.add(backButton, BorderLayout.SOUTH);
+
         frame.getContentPane().add(panel);
         frame.pack();
+    }
+
+    private void createNote() {
+        frame.getContentPane().removeAll();
+        frame.repaint();
+
+        panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+
+        JTextField titleField = new JTextField();
+        JTextArea contentArea = new JTextArea();
+        contentArea.setRows(10); // Set rows for the content area
+        contentArea.setColumns(40); // Set columns for the content area
+
+        JButton createButton = new JButton("Create Note");
+        createButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                saveNote(titleField.getText(), contentArea.getText());
+            }
+        });
+
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openMainMenu();
+            }
+        });
+
+        panel.add(new JLabel("Title:"), BorderLayout.NORTH);
+        panel.add(titleField, BorderLayout.NORTH);
+        panel.add(new JLabel("Content:"), BorderLayout.CENTER);
+        panel.add(new JScrollPane(contentArea), BorderLayout.CENTER);
+        panel.add(createButton, BorderLayout.SOUTH);
+        panel.add(backButton, BorderLayout.SOUTH);
+
+        frame.getContentPane().add(panel);
+        frame.pack();
+    }
+
+    private void deleteNote() {
+        JFileChooser fileChooser = new JFileChooser(new File("notes/" + currentUser));
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int result = fileChooser.showOpenDialog(frame);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            if (selectedFile.delete()) {
+                JOptionPane.showMessageDialog(frame, "Note deleted successfully.");
+            } else {
+                JOptionPane.showMessageDialog(frame, "Error deleting note.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     private String loadNotes() {
@@ -152,6 +247,31 @@ public class NotesManagerGUI {
             }
         }
         return notes.toString();
+    }
+
+    private void saveNote(String title, String content) {
+        // Validate title
+        if (title.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "Title cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Create directory for user's notes if it doesn't exist
+        File userDir = new File("notes/" + currentUser);
+        if (!userDir.exists()) {
+            userDir.mkdirs();
+        }
+
+        // Create the note file
+        File noteFile = new File(userDir, title + ".txt");
+        try {
+            FileWriter writer = new FileWriter(noteFile);
+            writer.write(content);
+            writer.close();
+            JOptionPane.showMessageDialog(frame, "Note created successfully.");
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(frame, "Error creating note: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private boolean isValidUsername(String username) {
