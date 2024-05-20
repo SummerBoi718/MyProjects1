@@ -159,7 +159,7 @@ public class NotesManagerGui {
             if (noteFiles != null) {
                 for (File noteFile : noteFiles) {
                     String title = noteFile.getName().replace(".txt", "");
-                    JButton viewButton = new JButton("View " + title);
+                    JButton viewButton = new JButton("i view ni bi " + title);
                     viewButton.addActionListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
                             viewNoteContent(noteFile);
@@ -170,7 +170,7 @@ public class NotesManagerGui {
             }
         }
 
-        JButton backButton = new JButton("Back");
+        JButton backButton = new JButton("Balik");
         backButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 openMainMenu();
