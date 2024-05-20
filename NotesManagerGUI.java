@@ -76,6 +76,11 @@ public class NotesManagerGUI {
 
         // Create new user account
         File accountFile = new File("accounts/" + username + ".txt");
+        if (accountFile.exists()) {
+            JOptionPane.showMessageDialog(frame, "Username already exists. Please choose a different username.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         try {
             FileWriter writer = new FileWriter(accountFile);
             writer.write(username + "\n" + password);
@@ -108,7 +113,7 @@ public class NotesManagerGUI {
         frame.repaint();
 
         panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 1));
+        panel.setLayout(new GridLayout(5, 1));
 
         JTextField titleField = new JTextField();
         JTextArea contentArea = new JTextArea();
@@ -119,17 +124,31 @@ public class NotesManagerGUI {
             }
         });
 
+        JButton deleteButton = new JButton("Delete Note");
+        deleteButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                deleteNote();
+            }
+        });
+
         panel.add(new JLabel("Title:"));
         panel.add(titleField);
         panel.add(new JLabel("Content:"));
         panel.add(new JScrollPane(contentArea));
         panel.add(createButton);
+        panel.add(deleteButton);
 
         frame.getContentPane().add(panel);
         frame.pack();
     }
 
     private void createNote(String title, String content) {
+        // Validate title
+        if (title.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(frame, "Title cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         // Create directory for user's notes if it doesn't exist
         File userDir = new File("notes/" + currentUser);
         if (!userDir.exists()) {
@@ -137,7 +156,7 @@ public class NotesManagerGUI {
         }
 
         // Create the note file
-        File noteFile = new File("notes/" + currentUser + "/" + title + ".txt");
+        File noteFile = new File(userDir, title + ".txt");
         try {
             FileWriter writer = new FileWriter(noteFile);
             writer.write(content);
@@ -145,6 +164,20 @@ public class NotesManagerGUI {
             JOptionPane.showMessageDialog(frame, "Note created successfully.");
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(frame, "Error creating note: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void deleteNote() {
+        JFileChooser fileChooser = new JFileChooser(new File("notes/" + currentUser));
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int result = fileChooser.showOpenDialog(frame);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            if (selectedFile.delete()) {
+                JOptionPane.showMessageDialog(frame, "Note deleted successfully.");
+            } else {
+                JOptionPane.showMessageDialog(frame, "Error deleting note.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
