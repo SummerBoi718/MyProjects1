@@ -187,10 +187,10 @@ public class NotesManagerGUI {
         contentArea.setRows(10); // Set rows for the content area
         contentArea.setColumns(40); // Set columns for the content area
 
-        JButton createButton = new JButton("Create Note");
-        createButton.addActionListener(new ActionListener() {
+        JButton saveButton = new JButton("Save Note");
+        saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                saveNote(titleField.getText(), contentArea.getText());
+                saveNoteAndReturn(titleField.getText(), contentArea.getText());
             }
         });
 
@@ -205,7 +205,7 @@ public class NotesManagerGUI {
         panel.add(titleField, BorderLayout.NORTH);
         panel.add(new JLabel("Content:"), BorderLayout.CENTER);
         panel.add(new JScrollPane(contentArea), BorderLayout.CENTER);
-        panel.add(createButton, BorderLayout.SOUTH);
+        panel.add(saveButton, BorderLayout.SOUTH);
         panel.add(backButton, BorderLayout.SOUTH);
 
         frame.getContentPane().add(panel);
@@ -249,7 +249,7 @@ public class NotesManagerGUI {
         return notes.toString();
     }
 
-    private void saveNote(String title, String content) {
+    private void saveNoteAndReturn(String title, String content) {
         // Validate title
         if (title.trim().isEmpty()) {
             JOptionPane.showMessageDialog(frame, "Title cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -269,6 +269,7 @@ public class NotesManagerGUI {
             writer.write(content);
             writer.close();
             JOptionPane.showMessageDialog(frame, "Note created successfully.");
+            openMainMenu(); // Return to the main menu after saving the note
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(frame, "Error creating note: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
